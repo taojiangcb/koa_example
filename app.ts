@@ -3,10 +3,12 @@ import * as Router from "koa-router";
 import { EventEmitter } from "events";
 import { eventNames } from "cluster";
 import * as fs from "fs";
+import { SequelizeConfig } from "./config/SequelizeConfig";
+import { IConfig } from "./config/Define";
+import { dbTestInstall } from "./test/DBMgrTest";
 
 let app = new Koa();
 let router = new Router();
-
 
 function initServers():void {
     var server_files:string[];
@@ -14,7 +16,7 @@ function initServers():void {
     server_files = files.filter((f)=>{
         return f.endsWith(".js");
     },this);
-    
+        
     server_files.forEach(f => {
         let mapping = require(__dirname + "/servers/" + f);
         for(var url in mapping) {
@@ -53,6 +55,7 @@ process.addListener("exit",(code:number)=>{
     console.log("exit code" + code);
 });
 
+
 /**
  * hello world
  */
@@ -60,6 +63,20 @@ router.get("/*",async(ctx)=>{
     ctx.body = "hello world";
 });
 
+var config_path:string = `config_${process.env.NODE_ENV}.json`;
+export var config:IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
+
+/** 初始化数据库 */
+export var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
+sequelizeCfg.init(()=>{
+    console.log("数据库准备成功");
+
+    dbTestInstall();
+
+}
+,()=>{
+    console.log("数据库准备失败");
+});
 
 app.use(router.routes);
 app.listen(3000);

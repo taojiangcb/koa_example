@@ -8,10 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 function login(ctx, next) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("the call login function");
+        var body = ctx.request.body; //接收post 请求参数
+        console.log(body);
+        return ctx.response.body = body;
     });
 }
+function login_get(ctx, netx) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("the call login_get function");
+        var query = ctx.request.querty; //接收get 请求参数
+        console.log(query);
+        //返回
+        return ctx.response.body = query;
+    });
+}
+/**
+ * 导出接口
+ */
 module.exports = {
-    'POST       /login/login': login,
-    'POST       /login/login2': login
+    'POST /login/login': login,
+    'GET /login/login_get': login_get
 };
 //# sourceMappingURL=LoginServer.js.map

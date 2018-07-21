@@ -11,6 +11,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Koa = require("koa");
 const Router = require("koa-router");
 const fs = require("fs");
+const SequelizeConfig_1 = require("./config/SequelizeConfig");
+const DBMgrTest_1 = require("./test/DBMgrTest");
 let app = new Koa();
 let router = new Router();
 function initServers() {
@@ -56,9 +58,22 @@ process.addListener("uncaughtException", (err) => {
 process.addListener("exit", (code) => {
     console.log("exit code" + code);
 });
+/**
+ * hello world
+ */
 router.get("/*", (ctx) => __awaiter(this, void 0, void 0, function* () {
     ctx.body = "hello world";
 }));
+var config_path = `config_${process.env.NODE_ENV}.json`;
+exports.config = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
+/** 初始化数据库 */
+exports.sequelizeCfg = new SequelizeConfig_1.SequelizeConfig();
+exports.sequelizeCfg.init(() => {
+    console.log("数据库准备成功");
+    DBMgrTest_1.dbTestInstall();
+}, () => {
+    console.log("数据库准备失败");
+});
 app.use(router.routes);
 app.listen(3000);
 console.log("server runing on port 3000");
