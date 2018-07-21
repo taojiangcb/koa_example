@@ -9,3 +9,10 @@ export interface IConfig {
     setting:{}
 }
 
+const Define = {
+    writeLogFile:true
+}
+export {Define}
+
+
+

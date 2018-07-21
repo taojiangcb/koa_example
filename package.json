@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/log4js": "^2.3.5",
     "koa": "^2.5.1",
     "koa-router": "^7.4.0",
+    "log4js": "^3.0.2",
     "mysql2": "^1.5.3",
     "sequelize": "^4.38.0",
     "typescript": "^2.9.2"

@@ -1,10 +1,8 @@
  import {Sequelize, DefineOptions} from "sequelize";
 import * as sequelize from "sequelize";
 import { EventEmitter } from "events";
-import { debuglog } from "util";
-import { fail } from "assert";
-import { IConfig } from "./Define";
-import { config } from "../app";
+import { config } from "../../app";
+
 
 export class SequelizeConfig extends EventEmitter {
     sequelize:Sequelize;

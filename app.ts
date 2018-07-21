@@ -3,22 +3,25 @@ import * as Router from "koa-router";
 import { EventEmitter } from "events";
 import { eventNames } from "cluster";
 import * as fs from "fs";
-import { SequelizeConfig } from "./config/SequelizeConfig";
-import { IConfig } from "./config/Define";
-import { dbTestInstall } from "./test/DBMgrTest";
+import { SequelizeConfig } from "./src/config/SequelizeConfig";
+import { IConfig } from "./src/config/Define";
+import { dbTestInstall } from "./src/test/DBMgrTest";
+import { Log } from "./src/log/Log";
+
 
 let app = new Koa();
 let router = new Router();
+let svrPath:string = "/src/servers";
 
 function initServers():void {
     var server_files:string[];
-    var files = fs.readdirSync(__dirname + "/servers");
+    var files = fs.readdirSync(`${__dirname}${svrPath}`);
     server_files = files.filter((f)=>{
         return f.endsWith(".js");
     },this);
         
     server_files.forEach(f => {
-        let mapping = require(__dirname + "/servers/" + f);
+        let mapping = require(`${__dirname}${svrPath}/${f}`);
         for(var url in mapping) {
             if(url.startsWith("GET")) {
                 let funs:string[] = url.split(/\s+/i);
@@ -64,15 +67,13 @@ router.get("/*",async(ctx)=>{
 });
 
 var config_path:string = `config_${process.env.NODE_ENV}.json`;
-export var config:IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
+var config:IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
 
 /** 初始化数据库 */
-export var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
+var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
 sequelizeCfg.init(()=>{
     console.log("数据库准备成功");
-
     dbTestInstall();
-
 }
 ,()=>{
     console.log("数据库准备失败");
@@ -80,4 +81,7 @@ sequelizeCfg.init(()=>{
 
 app.use(router.routes);
 app.listen(3000);
-console.log("server runing on port 3000");
+Log.log("server runing on port 3000");
+
+
+export {config,sequelizeCfg}

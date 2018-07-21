@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize = require("sequelize");
 const events_1 = require("events");
-const app_1 = require("../app");
+const app_1 = require("../../app");
 class SequelizeConfig extends events_1.EventEmitter {
     constructor() {
         super(...arguments);

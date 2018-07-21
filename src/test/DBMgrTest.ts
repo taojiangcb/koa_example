@@ -1,5 +1,5 @@
 import { SequelizeConfig, TablesNames } from "../config/SequelizeConfig";
-import { sequelizeCfg } from "../app";
+import { sequelizeCfg } from "../../app";
 
 
 export function dbTestInstall():void {
