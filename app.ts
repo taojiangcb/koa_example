@@ -4,7 +4,7 @@ import { EventEmitter } from "events";
 import { eventNames } from "cluster";
 import * as fs from "fs";
 import { SequelizeConfig } from "./src/config/SequelizeConfig";
-import { IConfig } from "./src/config/Define";
+import { IConfig, Define } from "./src/config/Define";
 import { dbTestInstall } from "./src/test/DBMgrTest";
 import { Log } from "./src/log/Log";
 
@@ -12,6 +12,7 @@ import { Log } from "./src/log/Log";
 let app = new Koa();
 let router = new Router();
 let svrPath:string = "/src/servers";
+Define.rootPath = __dirname;
 
 function initServers():void {
     var server_files:string[];
@@ -74,6 +75,9 @@ var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
 sequelizeCfg.init(()=>{
     console.log("数据库准备成功");
     dbTestInstall();
+
+    Log.infoLog("数据库准备成功");
+
 }
 ,()=>{
     console.log("数据库准备失败");
@@ -81,7 +85,7 @@ sequelizeCfg.init(()=>{
 
 app.use(router.routes);
 app.listen(3000);
-Log.log("server runing on port 3000");
-
+//Log.log("server runing on port 3000");
+Log.infoLog("server runing on port 3000");
 
 export {config,sequelizeCfg}

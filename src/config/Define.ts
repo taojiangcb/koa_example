@@ -10,7 +10,8 @@ export interface IConfig {
 }
 
 const Define = {
-    writeLogFile:true
+    writeLogFile:true,
+    rootPath:""
 }
 export {Define}
 

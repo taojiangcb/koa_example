@@ -12,11 +12,13 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const fs = require("fs");
 const SequelizeConfig_1 = require("./src/config/SequelizeConfig");
+const Define_1 = require("./src/config/Define");
 const DBMgrTest_1 = require("./src/test/DBMgrTest");
 const Log_1 = require("./src/log/Log");
 let app = new Koa();
 let router = new Router();
 let svrPath = "/src/servers";
+Define_1.Define.rootPath = __dirname;
 function initServers() {
     var server_files;
     var files = fs.readdirSync(`${__dirname}${svrPath}`);
@@ -75,10 +77,12 @@ exports.sequelizeCfg = sequelizeCfg;
 sequelizeCfg.init(() => {
     console.log("数据库准备成功");
     DBMgrTest_1.dbTestInstall();
+    Log_1.Log.infoLog("数据库准备成功");
 }, () => {
     console.log("数据库准备失败");
 });
 app.use(router.routes);
 app.listen(3000);
-Log_1.Log.log("server runing on port 3000");
+//Log.log("server runing on port 3000");
+Log_1.Log.infoLog("server runing on port 3000");
 //# sourceMappingURL=app.js.map
