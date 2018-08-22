@@ -15,6 +15,7 @@ const SequelizeConfig_1 = require("./src/config/SequelizeConfig");
 const Define_1 = require("./src/config/Define");
 const DBMgrTest_1 = require("./src/test/DBMgrTest");
 const Log_1 = require("./src/log/Log");
+const RedisCfg_1 = require("./src/redis/RedisCfg");
 let app = new Koa();
 let router = new Router();
 let svrPath = "/src/servers";
@@ -75,7 +76,6 @@ exports.config = config;
 var sequelizeCfg = new SequelizeConfig_1.SequelizeConfig();
 exports.sequelizeCfg = sequelizeCfg;
 sequelizeCfg.init(() => {
-    console.log("数据库准备成功");
     DBMgrTest_1.dbTestInstall();
     Log_1.Log.infoLog("数据库准备成功");
 }, () => {
@@ -83,6 +83,16 @@ sequelizeCfg.init(() => {
 });
 app.use(router.routes);
 app.listen(3000);
-//Log.log("server runing on port 3000");
 Log_1.Log.infoLog("server runing on port 3000");
+function redisInit() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let redCfg = new RedisCfg_1.RedisCfg();
+        redCfg.init();
+        yield redCfg.del("hello");
+        yield redCfg.set("hello", "12306====");
+        let val = yield redCfg.get("hello");
+        Log_1.Log.log("=======redis value is " + val);
+    });
+}
+redisInit();
 //# sourceMappingURL=app.js.map

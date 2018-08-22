@@ -10,16 +10,20 @@
   "license": "ISC",
   "dependencies": {
     "@types/log4js": "^2.3.5",
+    "co": "^4.6.0",
+    "co-redis": "^2.1.1",
     "koa": "^2.5.1",
     "koa-router": "^7.4.0",
     "log4js": "^3.0.2",
     "mysql2": "^1.5.3",
+    "redis": "^2.8.0",
     "sequelize": "^4.38.0",
     "typescript": "^2.9.2"
   },
   "devDependencies": {
     "@types/koa": "^2.0.46",
     "@types/koa-router": "^7.0.30",
+    "@types/redis": "^2.8.6",
     "@types/sequelize": "^4.27.23",
     "nodemon": "^1.17.5",
     "ts-node": "^7.0.0",

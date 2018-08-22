@@ -45,8 +45,6 @@ function log(msg, ...args) {
 }
 function infoLog(msg, ...args) {
     infoLogger.info(msg, args);
-    infoLogger.info("-------------------------------------------------------------------");
-    fileLogger.info(msg, args);
 }
 exports.Log = {
     log: log,
