@@ -51,8 +51,6 @@ function log(msg: string, ...args) {
 
 function infoLog(msg:string,...args) {
     infoLogger.info(msg,args);
-    infoLogger.info("-------------------------------------------------------------------");
-    fileLogger.info(msg, args);
 }
 
 export var Log = { 

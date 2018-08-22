@@ -7,6 +7,7 @@ import { SequelizeConfig } from "./src/config/SequelizeConfig";
 import { IConfig, Define } from "./src/config/Define";
 import { dbTestInstall } from "./src/test/DBMgrTest";
 import { Log } from "./src/log/Log";
+import { RedisCfg } from "./src/redis/RedisCfg";
 
 
 let app = new Koa();
@@ -73,11 +74,8 @@ var config:IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).t
 /** 初始化数据库 */
 var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
 sequelizeCfg.init(()=>{
-    console.log("数据库准备成功");
     dbTestInstall();
-
     Log.infoLog("数据库准备成功");
-
 }
 ,()=>{
     console.log("数据库准备失败");
@@ -85,7 +83,20 @@ sequelizeCfg.init(()=>{
 
 app.use(router.routes);
 app.listen(3000);
-//Log.log("server runing on port 3000");
 Log.infoLog("server runing on port 3000");
+
+
+async function redisInit() {
+    
+    let redCfg:RedisCfg = new RedisCfg();
+    redCfg.init();
+
+    await redCfg.del("hello");
+    await redCfg.set("hello","12306====");
+    let val =await redCfg.get("hello");
+    Log.log("=======redis value is " + val);
+}
+
+redisInit();
 
 export {config,sequelizeCfg}
