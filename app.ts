@@ -59,7 +59,6 @@ process.addListener("exit",(code:number)=>{
     console.log("exit code" + code);
 });
 
-
 /**
  * hello world
  */
@@ -70,22 +69,28 @@ router.get("/*",async(ctx)=>{
 var config_path:string = `config_${process.env.NODE_ENV}.json`;
 var config:IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
 
+var define_pro = Define;
+var overrideDefine = Object.assign(define_pro,config.setting);
+for (const key in overrideDefine) {
+    if (overrideDefine.hasOwnProperty(key)) {
+        const element = overrideDefine[key];
+        Define[key] = element;
+    }
+}
+console.log(Define);
+
 /** 初始化数据库 */
 var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
 sequelizeCfg.init(()=>{
-    console.log("数据库准备成功");
-    dbTestInstall();
-
+    //dbTestInstall();
     Log.infoLog("数据库准备成功");
-
 }
 ,()=>{
-    console.log("数据库准备失败");
+    Log.errorLog("数据库准备失败");
 });
 
 app.use(router.routes);
 app.listen(3000);
-//Log.log("server runing on port 3000");
 Log.infoLog("server runing on port 3000");
 
 export {config,sequelizeCfg}
