@@ -5,4 +5,9 @@ const Define = {
     rootPath: ""
 };
 exports.Define = Define;
+exports.PlatIds = {
+    WX: 1001,
+    QQ: 1002,
+    FACE_BOOK: 1003
+};
 //# sourceMappingURL=Define.js.map

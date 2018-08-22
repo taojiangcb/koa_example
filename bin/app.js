@@ -13,7 +13,6 @@ const Router = require("koa-router");
 const fs = require("fs");
 const SequelizeConfig_1 = require("./src/config/SequelizeConfig");
 const Define_1 = require("./src/config/Define");
-const DBMgrTest_1 = require("./src/test/DBMgrTest");
 const Log_1 = require("./src/log/Log");
 let app = new Koa();
 let router = new Router();
@@ -71,18 +70,25 @@ router.get("/*", (ctx) => __awaiter(this, void 0, void 0, function* () {
 var config_path = `config_${process.env.NODE_ENV}.json`;
 var config = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
 exports.config = config;
+var define_pro = Define_1.Define;
+var overrideDefine = Object.assign(define_pro, config.setting);
+for (const key in overrideDefine) {
+    if (overrideDefine.hasOwnProperty(key)) {
+        const element = overrideDefine[key];
+        Define_1.Define[key] = element;
+    }
+}
+console.log(Define_1.Define);
 /** 初始化数据库 */
 var sequelizeCfg = new SequelizeConfig_1.SequelizeConfig();
 exports.sequelizeCfg = sequelizeCfg;
 sequelizeCfg.init(() => {
-    console.log("数据库准备成功");
-    DBMgrTest_1.dbTestInstall();
+    //dbTestInstall();
     Log_1.Log.infoLog("数据库准备成功");
 }, () => {
-    console.log("数据库准备失败");
+    Log_1.Log.errorLog("数据库准备失败");
 });
 app.use(router.routes);
 app.listen(3000);
-//Log.log("server runing on port 3000");
 Log_1.Log.infoLog("server runing on port 3000");
 //# sourceMappingURL=app.js.map

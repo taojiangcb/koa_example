@@ -15,5 +15,11 @@ const Define = {
 }
 export {Define}
 
+export const PlatIds = {
+    WX:1001,
+    QQ:1002,
+    FACE_BOOK:1003
+}
+
 
 
