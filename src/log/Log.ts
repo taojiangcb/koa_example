@@ -12,6 +12,11 @@ var logFileAppender: log4js.FileAppender = {
     filename: path.resolve(Define.rootPath,"./logOut.log"),
 }
 
+var errorFileAppender:log4js.FileAppender = {
+    type:"file",
+    filename:path.resolve(Define.rootPath,"./error.log")
+}
+
 var infoFileAppender: log4js.DateFileAppender = {
     type: "dateFile",
     filename: path.resolve(Define.rootPath,"./logs/info"),
@@ -28,19 +33,23 @@ let logCfg: log4js.Configuration = {
     appenders: {
         default: ca,
         fileLog: logFileAppender,
-        infoLog: infoFileAppender
+        infoLog: infoFileAppender,
+        errorLog:errorFileAppender,
     },
     categories: {
         default: { appenders: ['default'], level: 'all' },
         fileLog: { appenders: ["fileLog"], level: "all" },
-        infoFile: { appenders: ["infoLog"], level: "all" }
+        infoFile: { appenders: ["infoLog"], level: "all" },
+        errorLog:{appenders:["errorLog"],level:"error"}
     }
 }
 
 log4js.configure(logCfg);
+
 let devLogger = log4js.getLogger("default");
 let fileLogger = log4js.getLogger("fileLog");
 let infoLogger = log4js.getLogger("infoLog");
+let errorLogger = log4js.getLogger("errorLog");
 
 function log(msg: string, ...args) {
     devLogger.debug(msg, args);
@@ -53,7 +62,12 @@ function infoLog(msg:string,...args) {
     infoLogger.info(msg,args);
 }
 
+function errorLog(msg:string,...args) {
+    errorLogger.error(msg,args);
+}
+
 export var Log = { 
     log: log,
     infoLog:infoLog,
+    errorLog:errorLog,
 };

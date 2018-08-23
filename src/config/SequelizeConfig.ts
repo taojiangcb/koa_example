@@ -157,7 +157,7 @@ class sys_recharge_log {
         createTime:{type:sequelize.DATE,defaultValue:new Date()},
         updateTime:{type:sequelize.DATE,defaultValue:new Date()}
     }
-
+    
     static opt:sequelize.DefineOptions<any> = normal_opt;
     static syncOpt:sequelize.SyncOptions = normal_sync_opt;
 }
