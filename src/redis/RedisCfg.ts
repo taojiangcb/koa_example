@@ -2,7 +2,6 @@ import redis = require("redis");
 import { Log } from "../log/Log";
 import wrapper = require("co-redis");
 
-
 export class RedisCfg {
     ip:string = "47.100.202.222";
     port:number = 6379;
@@ -10,11 +9,13 @@ export class RedisCfg {
     private redisClient:redis.RedisClient = null;
     private redisco;
     
-    constructor(address:string = "47.100.202.222",port:number=6379) {
-        this.ip = address,this.port = port;
+    constructor() {
     }
 
-    init():void {
+    init(address:string = "47.100.202.222",port:number=6379):void {
+
+        this.ip = address,this.port = port;
+
         let clientPot:redis.ClientOpts = {
             port:this.port,
             host:this.ip,
@@ -22,7 +23,7 @@ export class RedisCfg {
 
         this.redisClient = redis.createClient(clientPot);
         this.redisco = wrapper(this.redisClient);
-        
+
         this.redisClient.on("error",this.errorHandler);
         this.redisClient.on("ready",this.readyHandler);
         this.redisClient.on("disconnect",this.disconnectHandler);
@@ -187,3 +188,6 @@ export class RedisCfg {
         return this.redisco;
     }
 }
+
+var redisCfg = new RedisCfg();
+export {redisCfg}

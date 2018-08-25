@@ -3,7 +3,6 @@ import * as sequelize from "sequelize";
 import { EventEmitter } from "events";
 import { config } from "../../app";
 
-
 export class SequelizeConfig extends EventEmitter {
     sequelize:Sequelize;
 
@@ -69,7 +68,14 @@ export class SequelizeConfig extends EventEmitter {
     public get tables() {
         return this.dbTables;
     }
+
+    public getTable(tableName:string):sequelize.Model<any,any> {
+        return this.dbTables[tableName];
+    }
 }
+
+export var sequelizeCfg = new SequelizeConfig();
+
 
 /**
  * 数据库操作事件
@@ -128,6 +134,8 @@ class sys_user_game {
     static opt:sequelize.DefineOptions<any> = normal_opt;
     static syncOpt:sequelize.SyncOptions = normal_sync_opt;
 }
+
+//type TClass = {tableName:string}
 
 class sys_user_plat {
     static tableName:string = TablesNames.sys_user_plat;

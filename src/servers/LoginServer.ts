@@ -1,12 +1,11 @@
-import { PlatFactory } from "../plats/PlatFactory";
+import { PlatFactory, platFactory } from "../plats/PlatFactory";
 import { IPlatServer } from "../plats/PlatBase";
 
 async function login(ctx,next) {
     console.log("the call login function")
     var body:LoginParam = ctx.request.body;        //接收post 请求参数
 
-    var f:PlatFactory = new PlatFactory();
-    var platServer:IPlatServer = await f.getInstance(body.plat);
+    var platServer:IPlatServer = await platFactory.getInstance(body.plat);
     if(platServer) {
         ctx.response.body = await platServer.login(body);
     }

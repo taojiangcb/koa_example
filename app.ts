@@ -3,12 +3,11 @@ import * as Router from "koa-router";
 import { EventEmitter } from "events";
 import { eventNames } from "cluster";
 import * as fs from "fs";
-import { SequelizeConfig } from "./src/config/SequelizeConfig";
+import { SequelizeConfig, sequelizeCfg } from "./src/config/SequelizeConfig";
 import { IConfig, Define } from "./src/config/Define";
 import { dbTestInstall } from "./src/test/DBMgrTest";
 import { Log } from "./src/log/Log";
-import { RedisCfg } from "./src/redis/RedisCfg";
-
+import { RedisCfg, redisCfg } from "./src/redis/RedisCfg";
 
 let app = new Koa();
 let router = new Router();
@@ -68,7 +67,7 @@ router.get("/*",async(ctx)=>{
 });
 
 var config_path:string = `config_${process.env.NODE_ENV}.json`;
-var config:IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
+export var config:IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
 
 var define_pro = Define;
 var overrideDefine = Object.assign(define_pro,config.setting);
@@ -81,9 +80,8 @@ for (const key in overrideDefine) {
 console.log(Define);
 
 /** 初始化数据库 */
-var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
+// var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
 sequelizeCfg.init(()=>{
-    //dbTestInstall();
     Log.infoLog("数据库准备成功");
 }
 ,()=>{
@@ -94,17 +92,7 @@ app.use(router.routes);
 app.listen(3000);
 Log.infoLog("server runing on port 3000");
 
-
 async function redisInit() {
-    
-    let redCfg:RedisCfg = new RedisCfg();
-    redCfg.init();
-
-    await redCfg.del("hello");
-    await redCfg.set("hello","12306====");
-    let val =await redCfg.get("hello");
-    Log.log("=======redis value is " + val);
+    redisCfg.init();
 }
-
 redisInit();
-export {config,sequelizeCfg}

@@ -17,3 +17,5 @@ export class PlatFactory {
         return this.platServer;
     }
 }
+
+export var platFactory:PlatFactory = new PlatFactory();
