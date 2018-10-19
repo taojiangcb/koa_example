@@ -1,4 +1,4 @@
-import { TablesNames, sequelizeCfg } from "../config/SequelizeConfig";
+import { TablesNames, sequelizeInst } from "./SequelizeConfig";
 import { Transaction } from "sequelize";
 import { RespBase } from "../resp/RespBase";
 import { ErrorCode } from "../config/ErrorCode";
@@ -9,7 +9,7 @@ import { PlatBaseServer } from "../plats/PlatBase";
 //import { SequelizeConfig } from "../config/SequelizeConfig";
 
 async function getPlatUser(platId:number,userid:string) {
-  let userTable = sequelizeCfg.getTable(TablesNames.sys_user);
+  let userTable = sequelizeInst.getTable(TablesNames.sys_user);
   return userTable.findOne({
       where:{
           plat_id:platId,
@@ -19,11 +19,11 @@ async function getPlatUser(platId:number,userid:string) {
 }
 
 async function createUser(platId:number,userId:string,zxId:string,gameId:number,name:string,avatar:string,userKey:string){
-    var t:Transaction = await sequelizeCfg.sequelize.transaction();
+    var t:Transaction = await sequelizeInst.sequelize.transaction();
     try {
-        let userGame = sequelizeCfg.getTable(TablesNames.sys_user_game);
-        let users = sequelizeCfg.getTable(TablesNames.sys_user);
-        let platUser = sequelizeCfg.getTable(TablesNames.sys_user_plat);
+        let userGame = sequelizeInst.getTable(TablesNames.sys_user_game);
+        let users = sequelizeInst.getTable(TablesNames.sys_user);
+        let platUser = sequelizeInst.getTable(TablesNames.sys_user_plat);
 
         await userGame.create({zx_id:zxId,game_id:gameId,plat_id:platId},{transaction:t});
         await users.create({zx_id:zxId,user_name:name,avatar:avatar},{transaction:t});
@@ -46,19 +46,19 @@ async function createUser(platId:number,userId:string,zxId:string,gameId:number,
 }
 
 function sys_user_table():sequelize.Model<any,any> {
-    return sequelizeCfg.getTable[TablesNames.sys_user];
+    return sequelizeInst.getTable[TablesNames.sys_user];
 }
 
 function sys_user_game_table():sequelize.Model<any,any> {
-    return sequelizeCfg.getTable[TablesNames.sys_user_game];
+    return sequelizeInst.getTable[TablesNames.sys_user_game];
 }
 
 function sys_user_plat_table():sequelize.Model<any,any> {
-    return sequelizeCfg.getTable[TablesNames.sys_user_plat];
+    return sequelizeInst.getTable[TablesNames.sys_user_plat];
 }
 
 function sys_recharge_log_table():sequelize.Model<any,any> {
-    return sequelizeCfg.getTable[TablesNames.sys_recharge_log];
+    return sequelizeInst.getTable[TablesNames.sys_recharge_log];
 }
 
 export var DBTools = {

@@ -3,7 +3,7 @@ import * as Router from "koa-router";
 import { EventEmitter } from "events";
 import { eventNames } from "cluster";
 import * as fs from "fs";
-import { SequelizeConfig, sequelizeCfg } from "./src/config/SequelizeConfig";
+import { SequelizeConfig, sequelizeInst } from "./src/database/SequelizeConfig";
 import { IConfig, Define } from "./src/config/Define";
 import { dbTestInstall } from "./src/test/DBMgrTest";
 import { Log } from "./src/log/Log";
@@ -11,43 +11,43 @@ import { RedisCfg, redisCfg } from "./src/redis/RedisCfg";
 
 let app = new Koa();
 let router = new Router();
-let svrPath:string = "/src/servers";
+let svrPath: string = "/src/servers";
+
 Define.rootPath = __dirname;
 
-function initServers():void {
-    var server_files:string[];
+function initServers(): void {
+    var server_files: string[];
     var files = fs.readdirSync(`${__dirname}${svrPath}`);
-    server_files = files.filter((f)=>{
+    server_files = files.filter((f) => {
         return f.endsWith(".js");
-    },this);
-        
+    }, this);
+
     server_files.forEach(f => {
         let mapping = require(`${__dirname}${svrPath}/${f}`);
-        for(var url in mapping) {
-            if(url.startsWith("GET")) {
-                let funs:string[] = url.split(/\s+/i);
+        for (var url in mapping) {
+            if (url.startsWith("GET")) {
+                let funs: string[] = url.split(/\s+/i);
                 console.log(funs);
-                router.get(funs[0],mapping[url]);
-            } else if(url.startsWith("POST")) {
-                let funs:string[] = url.split(/\s+/i);
+                router.get(funs[0], mapping[url]);
+            } else if (url.startsWith("POST")) {
+                let funs: string[] = url.split(/\s+/i);
                 console.log(funs);
-                router.post(funs[0],mapping[url]);
+                router.post(funs[0], mapping[url]);
             } else {
                 console.log("未知服务:" + url);
             }
         }
     });
 }
-initServers();
 
 /**
  * 当node 进程崩溃的时候处理
  */
-process.addListener("uncaughtException",(err:Error)=>{
-    if(err.message) {
+process.addListener("uncaughtException", (err: Error) => {
+    if (err.message) {
         console.log(err.message);
     }
-    if(err.stack) {
+    if (err.stack) {
         console.log(err.stack);
     }
 })
@@ -55,22 +55,22 @@ process.addListener("uncaughtException",(err:Error)=>{
 /**
  * 当node 进程退出时候处理
  */
-process.addListener("exit",(code:number)=>{
+process.addListener("exit", (code: number) => {
     console.log("exit code" + code);
 });
 
 /**
  * hello world
  */
-router.get("/*",async(ctx)=>{
+router.get("/*", async (ctx) => {
     ctx.body = "hello world";
 });
 
-var config_path:string = `config_${process.env.NODE_ENV}.json`;
-export var config:IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
+var config_path: string = `config_${process.env.NODE_ENV}.json`;
+export var config: IConfig = JSON.parse(fs.readFileSync(__dirname + '/' + config_path).toString());
 
 var define_pro = Define;
-var overrideDefine = Object.assign(define_pro,config.setting);
+var overrideDefine = Object.assign(define_pro, config.setting);
 for (const key in overrideDefine) {
     if (overrideDefine.hasOwnProperty(key)) {
         const element = overrideDefine[key];
@@ -81,18 +81,18 @@ console.log(Define);
 
 /** 初始化数据库 */
 // var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
-sequelizeCfg.init(()=>{
-    Log.infoLog("数据库准备成功");
+async function appStart() {
+    sequelizeInst.init(() => {
+        Log.infoLog("数据库准备成功");
+    }
+    , () => {
+        Log.errorLog("数据库准备失败");
+    });
+    redisCfg.init();
+    initServers();
 }
-,()=>{
-    Log.errorLog("数据库准备失败");
-});
+appStart();
 
 app.use(router.routes);
-app.listen(3000);
-Log.infoLog("server runing on port 3000");
-
-async function redisInit() {
-    redisCfg.init();
-}
-redisInit();
+app.listen(3005);
+Log.infoLog("server runing on port 3005");
