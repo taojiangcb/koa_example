@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "D:\\jt\\works\\qqdmx\\thirdparty\\coreServer",
+			"name": "coreServer"
+		},
+		{
+			"path": "D:\\jt\\works\\qqdmx\\plat-qqH5",
+			"name": "plat-qqH5"
+		},
+		{
+			"path": "D:\\jt\\works\\zxtools",
+			"name": "zxtools"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

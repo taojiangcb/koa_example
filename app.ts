@@ -5,9 +5,16 @@ import { eventNames } from "cluster";
 import * as fs from "fs";
 import { SequelizeConfig, sequelizeInst } from "./src/database/SequelizeConfig";
 import { IConfig, Define } from "./src/config/Define";
-import { dbTestInstall } from "./src/test/DBMgrTest";
+//import { dbTestInstall } from "./src/test/DBMgrTest";
 import { Log } from "./src/log/Log";
 import { RedisCfg, redisCfg } from "./src/redis/RedisCfg";
+import sequelize = require("sequelize");
+
+import path = require("path");
+import { MySqlClient } from "./src/database/mysqlDao/MySqlClient";
+import { sqlMgr } from "./src/database/mysqlDao/MySqlDBMgr";
+import { SQLDefine } from "./src/database/mysqlDao/MySqlDefine";
+
 
 let app = new Koa();
 let router = new Router();
@@ -90,6 +97,10 @@ async function appStart() {
     });
     redisCfg.init();
     initServers();
+
+    var sqlDao = await sqlMgr.createMySql(SQLDefine.opts());
+    var module_url:string = path.join(__dirname,"src/database/model/");
+    sqlDao.loadModel(module_url);
 }
 appStart();
 
