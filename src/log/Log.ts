@@ -3,19 +3,22 @@ import { Define } from "../config/Define";
 import path = require("path");
 
 
+//配置 Console
 var ca: log4js.ConsoleAppender = {
     type: "console"
 }
 
+//配置 logFIle
 var logFileAppender: log4js.FileAppender = {
     type: "file",
     filename: path.resolve(Define.rootPath,"./logOut.log"),
 }
 
+//配置info 追逐
 var infoFileAppender: log4js.DateFileAppender = {
     type: "dateFile",
     filename: path.resolve(Define.rootPath,"./logs/info"),
-    pattern: "-yyyy-MM-dd-hh-mm-ss.log",
+    pattern: "-yyyy-MM-dd-hh.log",
     alwaysIncludePattern:true,
     layout:{
         type:"messagePassThrough"

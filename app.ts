@@ -8,7 +8,6 @@ import { IConfig, Define } from "./src/config/Define";
 import { dbTestInstall } from "./src/test/DBMgrTest";
 import { Log } from "./src/log/Log";
 
-
 let app = new Koa();
 let router = new Router();
 let svrPath:string = "/src/servers";
@@ -75,9 +74,6 @@ var sequelizeCfg:SequelizeConfig = new SequelizeConfig();
 sequelizeCfg.init(()=>{
     console.log("数据库准备成功");
     dbTestInstall();
-
-    Log.infoLog("数据库准备成功");
-
 }
 ,()=>{
     console.log("数据库准备失败");

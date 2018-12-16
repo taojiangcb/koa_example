@@ -13,7 +13,7 @@ var logFileAppender = {
 var infoFileAppender = {
     type: "dateFile",
     filename: path.resolve(Define_1.Define.rootPath, "./logs/info"),
-    pattern: "-yyyy-MM-dd-hh-mm-ss.log",
+    pattern: "-yyyy-MM-dd-hh.log",
     alwaysIncludePattern: true,
     layout: {
         type: "messagePassThrough"
