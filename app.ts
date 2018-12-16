@@ -13,7 +13,8 @@ import sequelize = require("sequelize");
 import path = require("path");
 import { MySqlClient } from "./src/database/mysqlDao/MySqlClient";
 import { sqlMgr } from "./src/database/mysqlDao/MySqlDBMgr";
-import { SQLDefine } from "./src/database/mysqlDao/MySqlDefine";
+import { SQLDefine, TABLE_NAME } from "./src/database/mysqlDao/MySqlDefine";
+import { sys_user_table, sys_user_attrs, tableName } from "./src/database/mysqlDao/tables/sys_user";
 
 let app = new Koa();
 let router = new Router();
@@ -98,8 +99,13 @@ async function appStart() {
     initServers();
 
     var sqlDao = await sqlMgr.createMySql(SQLDefine.opts());
-    var module_url:string = path.join(__dirname,"src/database/model/");
-    sqlDao.loadModel(module_url);
+    var module_url:string = path.join(__dirname,"src/database/mysqlDao/tables");
+    await sqlDao.loadModel(module_url);
+    var sys_user = sqlDao.getTable<sys_user_table,sys_user_attrs>(TABLE_NAME.sys_user);
+    var sys_user_attrs = await sys_user.findAll();
+    sys_user_attrs.forEach((table,index,arr)=>{
+        console.info(table);
+    })
 }
 appStart();
 

@@ -3,13 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const log4js = require("log4js");
 const Define_1 = require("../config/Define");
 const path = require("path");
+//配置 Console
 var ca = {
     type: "console"
 };
+//配置 logFIle
 var logFileAppender = {
     type: "file",
     filename: path.resolve(Define_1.Define.rootPath, "./logOut.log"),
 };
+//配置info 追逐
 var infoFileAppender = {
     type: "dateFile",
     filename: path.resolve(Define_1.Define.rootPath, "./logs/info"),
@@ -21,22 +24,28 @@ var infoFileAppender = {
     keepFileExt: false,
     encoding: "utf-8"
 };
+var errorFileAppender = {
+    type: "stderr"
+};
 let logCfg = {
     appenders: {
         default: ca,
         fileLog: logFileAppender,
-        infoLog: infoFileAppender
+        infoLog: infoFileAppender,
+        errorLog: errorFileAppender,
     },
     categories: {
         default: { appenders: ['default'], level: 'all' },
         fileLog: { appenders: ["fileLog"], level: "all" },
-        infoFile: { appenders: ["infoLog"], level: "all" }
+        infoFile: { appenders: ["infoLog"], level: "all" },
+        errorLog: { appenders: ["errorLog"], level: "error" }
     }
 };
 log4js.configure(logCfg);
 let devLogger = log4js.getLogger("default");
 let fileLogger = log4js.getLogger("fileLog");
 let infoLogger = log4js.getLogger("infoLog");
+let errorLogger = log4js.getLogger("errorLog");
 function log(msg, ...args) {
     devLogger.debug(msg, args);
     if (Define_1.Define.writeLogFile) {
@@ -45,11 +54,13 @@ function log(msg, ...args) {
 }
 function infoLog(msg, ...args) {
     infoLogger.info(msg, args);
-    infoLogger.info("-------------------------------------------------------------------");
-    fileLogger.info(msg, args);
+}
+function errorLog(msg, ...args) {
+    errorLogger.error(msg, args);
 }
 exports.Log = {
     log: log,
     infoLog: infoLog,
+    errorLog: errorLog,
 };
 //# sourceMappingURL=Log.js.map

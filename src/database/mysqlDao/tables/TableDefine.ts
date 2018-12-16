@@ -1,6 +1,6 @@
 import { Instance } from "sequelize";
 import sequelize = require("sequelize");
-import { defColumnOpts } from "../MySqlClient";
+import { defColumnOpts, defSyncOpts } from "../MySqlClient";
 
 /**
  * mySql 数据表的名称
@@ -33,3 +33,5 @@ var hooks:sequelize.HooksDefineOptions<ITableInstant> = {}
 
 /**定义 mysql表中相关的默认配置 */
 export var opts:sequelize.DefineOptions<ITableInstant> = defColumnOpts;
+
+export var sync_opt:sequelize.SyncOptions = defSyncOpts;

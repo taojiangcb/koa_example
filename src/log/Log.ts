@@ -27,12 +27,16 @@ var infoFileAppender: log4js.DateFileAppender = {
     encoding:"utf-8"
 }
 
+var errorFileAppender:log4js.StandardErrorAppender = {
+    type:"stderr"
+}
+
 let logCfg: log4js.Configuration = {
     appenders: {
         default: ca,
         fileLog: logFileAppender,
         infoLog: infoFileAppender,
-        errorLog:errorFileAppender,
+       errorLog:errorFileAppender,
     },
     categories: {
         default: { appenders: ['default'], level: 'all' },

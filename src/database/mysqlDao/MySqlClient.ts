@@ -9,7 +9,14 @@ import { opts } from "./tables/TableDefine";
  * 默认全局的mysql 表配置
  */
 export var defColumnOpts:sequelize.DefineOptions<any> = {
-    timestamps:true
+    timestamps:true,
+    createdAt: "createTime",
+    updatedAt: "updateTime",
+    deletedAt: "deleteTime",
+}
+
+export var defSyncOpts:sequelize.SyncOptions = {
+    force:false
 }
 
 export class MySqlClient extends EventEmitter {
@@ -22,7 +29,7 @@ export class MySqlClient extends EventEmitter {
     /**
      * 当前数据操作的表集合
      */
-    private tables:{[key:string]:any}
+    private tables:{[key:string]:any} = {};
 
     constructor() { super();}
     
@@ -31,13 +38,6 @@ export class MySqlClient extends EventEmitter {
         if(opts && !opts.logging) {
             opts.logging = this.logHandler.bind(this);
         }
-//         database:"koa_example"
-// dialect:"mysql"
-// host:"47.100.202.222"
-// logging:function () { … }
-// password:"123456"
-// port:3306
-// username:"root"
         this.dbClient = new sequelize(opts);
         return await this.dbClient.authenticate();
     }
@@ -59,18 +59,31 @@ export class MySqlClient extends EventEmitter {
                 return name.endsWith(".js");
             })
 
-            jsFiles.forEach(f=>{
+            jsFiles.forEach(async f=>{
                 console.log(`import model from file ${f}...`);
                 let name = f.substr(0,f.length - 3);
                 let d = require(path.join(dir,f));
-                if(d && d.modle) {
+                if(d) {
 
                     var tableName:string = d.tableName;
                     var tableColumn:sequelize.DefineAttributes = d.column;
                     var opts = d.opts;
+                    var sync_opt = d.sync_opt;
 
-                    this.defineTable(tableName,tableColumn,opts)
-                    console.log(d);
+                    try {
+                        this.defineTable(tableName,tableColumn,opts);
+                        await this.dbClient.sync(sync_opt);
+                        console.debug(`sync:${tableName} force:${sync_opt.force}`);
+                        console.log(d);
+                        resolve();
+                    }
+                    catch(e) {
+                        console.error(`define error ${tableName}`);
+                        reject(e);
+                    }
+                    // this.dbClient.sync(sync_opt).then(value=>{
+                    //     console.debug(`sync:${tableName} force:${sync_opt.force}`);
+                    // });
                 }
             })
         })

@@ -1,6 +1,9 @@
 import { Options } from "sequelize";
 import { config } from "../../../app";
 
+export const TABLE_NAME = {
+    sys_user:"sys_user",
+}
 
 export var SQLDefine = {
     opts:()=>{
