@@ -7,6 +7,10 @@
         "database":"koa_example"
     },
     "setting":{
+<<<<<<< HEAD
         
+=======
+        "redis":"---------------------"
+>>>>>>> 44617040b71a43bb9e4e5c268fe9ce08eb7f8326
     }
 }
